@@ -13,8 +13,8 @@ func TestLocalTransport_Connect(t *testing.T) {
 	tra.Connect(trb)
 	trb.Connect(tra)
 
-	assert.Equal(t, tra.peers[trb.addr], trb)
-	assert.Equal(t, trb.peers[tra.addr], tra)
+	assert.Equal(t, tra.(*LocalTransport).peers[trb.(*LocalTransport).addr], trb)
+	assert.Equal(t, trb.(*LocalTransport).peers[tra.(*LocalTransport).addr], tra)
 }
 
 func TestSendMessage(t *testing.T) {
@@ -25,10 +25,10 @@ func TestSendMessage(t *testing.T) {
 	trb.Connect(tra)
 
 	msg := []byte("hello world")
-	assert.Nil(t, tra.SendMessage(trb.addr, msg))
+	assert.Nil(t, tra.SendMessage(trb.(*LocalTransport).addr, msg))
 
 	rpc := <-trb.Consume()
 
 	assert.Equal(t, rpc.Payload, msg)
-	assert.Equal(t, rpc.From, tra.addr)
+	assert.Equal(t, rpc.From, tra.(*LocalTransport).addr)
 }
